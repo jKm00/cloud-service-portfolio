@@ -11,11 +11,14 @@ At the beginning the API will use an in memory database. As I progress I will re
 ## Structure
 
 ```
-.
-├── .github/workflows                 # CI/CD configuration files
-├── documentation                     # Documentation
-├── portfolio-api                     # Spring-boot application
-│   ├── src/main/.../portfolioapi     # Source code
-│   └── src/test/.../portfolioapi     # Unit tests
-└── screenshots                       # Screenshots of the process
+├───.github/workflows                 # CI/CD configuration files
+│
+├───documentation                     # Documentation
+│
+├───portfolio-api                     # Spring-boot application
+│   ├───src/main/.../portfolioapi     # Source code
+│   │   │   └───resources             # Resources (e.g. application properties)
+│   │   └───test/.../portfolioapi     # Unit tests
+│
+└───screenshots                       # Screenshots of the process
 ```
