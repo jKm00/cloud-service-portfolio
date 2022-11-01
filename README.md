@@ -1,12 +1,12 @@
 # Cloud Service Portfolio
 
-**A repository for exploring CI/CD with cloud services. The end goal is to create a pipline from code commit too deployment where everything from building and testing is taken into account.**
+**A repository for exploring CI/CD with cloud services. The end goal is to create a pipline from code commit to deployment where everything from building and testing is taken into account.**
 
 ## The application
 
-For this task I will be using a spring boot application as an API. The idea is that whenever a change is made to the API, the api should be automatically build, tested and redeployed to the cloud service I chose
+For this task I will be using a spring boot application as an API. The idea is that whenever a change is made to the API, the api should be automatically build, tested and re-deployed to the cloud service of choice.
 
-At the beginning the API will use an in memory database. As I progress I will replace this with a postgreSQL database in "production" and only use the in memory database for the testing to make sure I will have consitant results.
+At the beginning the API will use an "in memory" database. As I progress I will replace this with a postgreSQL database in "production" and only use the "in memory" database for the testing to make sure I will have consitant results.
 
 ## Structure
 
