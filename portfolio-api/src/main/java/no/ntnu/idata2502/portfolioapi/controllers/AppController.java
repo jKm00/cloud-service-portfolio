@@ -12,4 +12,9 @@ public class AppController {
   public String version() {
     return "version 1.0";
   }
+
+  @GetMapping("/hello")
+  public String hello() {
+    return "Hello World!";
+  }
 }
