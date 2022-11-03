@@ -1,0 +1,31 @@
+name: CI/CD Pipeline
+on:
+  workflow_dispatch:
+    push:
+      branches:
+        - main
+
+jobs:
+  # Test the application
+  tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      # Check out repo
+      - uses: actions/checkout@v1
+      # Set up JDK
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: '17'
+      # Set up maven
+      - name: Cache Maven packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      # Run tests
+      - name: Run Tests
+        run: mvn -B test
+        working-directory: ./portfolio-api
