@@ -101,4 +101,4 @@ jobs:
         with:
           name: portfolio-api
           #From this path
-          path: target/portfolio-api-1.0.jar
+          path: portfolio-api/target/portfolio-api-1.0.jar
