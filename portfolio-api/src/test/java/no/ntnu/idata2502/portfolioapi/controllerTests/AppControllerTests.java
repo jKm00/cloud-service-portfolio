@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import no.ntnu.idata2502.portfolioapi.controllers.AppController;
 
 @SpringBootTest
-public class AppControllerTests {
+class AppControllerTests {
 
   @Test
   void testVersionEndpoint() {
