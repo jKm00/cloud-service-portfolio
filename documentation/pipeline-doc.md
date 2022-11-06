@@ -316,4 +316,6 @@ _Config file_
 <h2 id="sources">Sources & Resources</h2>
 
 - [Pipeline configuration guide](https://aws.plainenglish.io/hands-on-ci-cd-for-spring-boot-applications-using-github-actions-and-aws-1cbc1e2c9d54)
+- [GitHub Actions: Java with maven guide](https://github.com/actions/setup-java#caching-packages-dependencies)
+- [Sonar Cloud Github Actions](https://github.com/SonarSource/sonarcloud-github-action)
 - [GitHub Repository](https://github.com/jKm00/cloud-service-portfolio)
