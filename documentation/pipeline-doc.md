@@ -95,3 +95,43 @@ sonar:
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=jKm00_cloud-service-portfolio -Dspring.profiles.active=test
         working-directory: ./portfolio-api
 ```
+
+<h3 id="building">Building</h3>
+
+Before the app can be deployed, it needs to be built. That's what this job does. After the job has build the application, the `.jar` file is uploaded as an artifact, with name `portfolio-api`, so it can be shared across the pipeline jobs.
+
+```
+build:
+    # Make sure sonar job is succesfull
+    needs: sonar
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      #Check-out repository
+      - uses: actions/checkout@v1
+      #Set up JDK
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: '17'
+      #Set up Maven cache
+      - name: Cache Maven packages
+        #This action allows caching dependencies and build outputs to improve workflow execution time.
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      #Build the application using Maven
+      - name: Build with Maven
+        run: mvn -B package -DskipTests --file pom.xml
+        working-directory: ./portfolio-api
+      # Upload build version of application
+      - name: Upload JAR
+        #This uploads artifacts from your workflow allowing you to share data between jobs and store data once a workflow is complete.
+        uses: actions/upload-artifact@v2
+        with:
+          name: portfolio-api
+          #From this path
+          path: portfolio-api/target/portfolio-api-1.0.jar
+```
