@@ -214,19 +214,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Check out repo
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       # Set up JDK
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
+          distribution: 'temurin'
           java-version: '17'
-      # Set up maven
-      - name: Cache Maven packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+          cache: 'maven'
       # Run tests
       - name: Run Tests
         run: mvn -B test
@@ -244,11 +239,13 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
-      # Sets up JDK
+      # Set up JDK
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
+          distribution: 'temurin'
           java-version: '17'
+          cache: 'maven'
       # Sets up SonarCloud cache
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
@@ -256,13 +253,6 @@ jobs:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
-      # Sets up Maven cache
-      - name: Cache Maven packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
       # Uses SonarCloud to analyze the project
       - name: Build and analyze
         env:
@@ -279,20 +269,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       #Check-out repository
-      - uses: actions/checkout@v1
-      #Set up JDK
+      - uses: actions/checkout@v2
+      # Set up JDK
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
+          distribution: 'temurin'
           java-version: '17'
-      #Set up Maven cache
-      - name: Cache Maven packages
-        #This action allows caching dependencies and build outputs to improve workflow execution time.
-        uses: actions/cache@v1
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+          cache: 'maven'
       #Build the application using Maven
       - name: Build with Maven
         run: mvn -B package -DskipTests --file pom.xml
