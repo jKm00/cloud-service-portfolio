@@ -1,3 +1,5 @@
+Joakim Edvardsen
+
 # CI/CD Pipeline
 
 **The CI/CD Pipeline defines a set of instruction to test, build and deploy the spring boot application. These instructions are executed on every push to the main branch.**
@@ -15,7 +17,7 @@
   - [Sonar Cloud analyzing](#sonar-cloud-analyzing)
   - [Building](#building)
   - [Deploying](#deploying)
-- [Experiences](#experiences)
+- [Iterations / Experiences](#iterations-and-experiences)
 - [Further works](#further-works)
 - [Complete Pipeline Configuration](#pipeline-config)
 - [Sources & Resources](#sources)
@@ -171,8 +173,6 @@ sonar:
 
 _Pipeline config for Sonar Cloud analyze_
 
-This job is also ran on an ubuntu VM where a JDK and maven have to be downloaded and installed (using github actions) as well as SonarCloud have to be initialized.
-
 <!-- Jobs: Building -->
 <h3 id="building">Building</h3>
 
@@ -269,7 +269,7 @@ deploy:
 
 _Pipeline config for deployment_
 
-<h2 id="iterations">Iterations / Experiences</h2>
+<h2 id="iterations-and-experiences">Iterations / Experiences</h2>
 
 1. First I created the basic spring boot applicaiton with some endpoints. I wanted to connect the application to a database to challenge myself to have more than one service. In the beginning I created the app with an in memory database with the tought of moving this to a postgreSQL later in production. I would anyways need the in memory database configuration for testing to make sure I would have consistant test results.
 
@@ -384,13 +384,14 @@ jobs:
 
 _Config file_
 
-| ![Complete Pipeline Summary](../screenshots/version-0.3-build-overview.PNG) |
-| :-------------------------------------------------------------------------: |
-|                        **Complete Pipeline Summary**                        |
+| ![Complete Pipeline Summary](../screenshots/version-0.4-azure-workflow-overview.PNG) |
+| :----------------------------------------------------------------------------------: |
+|                            **Complete Pipeline Summary**                             |
 
 <h2 id="sources">Sources & Resources</h2>
 
 - [Pipeline configuration guide](https://aws.plainenglish.io/hands-on-ci-cd-for-spring-boot-applications-using-github-actions-and-aws-1cbc1e2c9d54)
 - [GitHub Actions: Java with maven guide](https://github.com/actions/setup-java#caching-packages-dependencies)
 - [Sonar Cloud Github Actions](https://github.com/SonarSource/sonarcloud-github-action)
+- [Azure / GitHub Pipeline](https://www.youtube.com/watch?v=CPsI1KnVSOM&t=1135s&ab_channel=JasonFreeberg)
 - [GitHub Repository](https://github.com/jKm00/cloud-service-portfolio)
