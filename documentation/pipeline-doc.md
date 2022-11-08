@@ -5,23 +5,45 @@
 <!-- TABLE OF CONTENTS -->
 <h2>Table of Contents</h2>
 
-- [Loaction - where to find the pipeline config](#location)
-- [Triggers - how the pipeline is triggered](#triggers)
-- [Jobs - what is done during the pipeline](#jobs)
+- [Motivation](#motivation)
+- [Tools - Which tools and why](#tools)
+- [Architecture](#architecture)
+- [Pipeline Loaction - where to find the pipeline config](#location)
+- [Pipeline Triggers - how the pipeline is triggered](#triggers)
+- [Pipeline Jobs - what is done during the pipeline](#jobs)
   - [Unit testing](#unit-test)
   - [Sonar Cloud analyzing](#sonar-cloud-analyzing)
   - [Building](#building)
   - [Deploying](#deploying)
+- [Experiences](#experiences)
+- [Further works](#further-works)
 - [Complete Pipeline Configuration](#pipeline-config)
 - [Sources & Resources](#sources)
 
+<!-- Motivation -->
+<h2 id="motivation">Motivation</h2>
+
+<!-- TODO: Motivation of why I chose the apps/tools. Something like I've created multiple spinrg boot apps but never actaully deployed any. Used a little docker before, but not to this extend... -->
+
+<!-- Tools -->
+<h2 id="tools">Tools - Which tools and why</h2>
+
+<!-- TODO: describe the tools used / why -->
+
+- Spring boot: Web applicaiton
+- Sonar Cloud: Analyze the project for security, code smells, test coverage etc...
+- Docker: Containerize the application, both the spring boot web app but also the postgreSQL database the spring boot app should be connected to
+- Azuer: Production environment to host the application
+
+<h2 id="architecture">Architecture</h2>
+
 <!-- Location -->
-<h2 id="location">Location</h2>
+<h2 id="location">Pipeline Location</h2>
 
 The pipeline file are store under `.github/workflows/build.yml`
 
 <!-- Triggers -->
-<h2 id="triggers">Triggers</h2>
+<h2 id="triggers">Pipeline Triggers</h2>
 
 The pipeline is triggered whenever a change is pushed to the main branch.
 
@@ -35,7 +57,7 @@ on:
 _Pipeline trigger config_
 
 <!-- Jobs -->
-<h2 id="jobs">Jobs</h2>
+<h2 id="jobs">Pipeline Jobs</h2>
 
 The pipeline consits of 4 jobs:
 
@@ -70,7 +92,7 @@ tests:
     - name: Set up JDK
       uses: actions/setup-java@v1
       with:
-        java-version: '17'
+        java-version: "17"
     # Set up maven
     - name: Cache Maven packages
       uses: actions/cache@v1
@@ -121,7 +143,7 @@ sonar:
     - name: Set up JDK
       uses: actions/setup-java@v1
       with:
-        java-version: '17'
+        java-version: "17"
     # Sets up SonarCloud cache
     - name: Cache SonarCloud packages
       uses: actions/cache@v1
@@ -171,7 +193,7 @@ build:
     - name: Set up JDK
       uses: actions/setup-java@v1
       with:
-        java-version: '17'
+        java-version: "17"
     #Set up Maven cache
     - name: Cache Maven packages
       #This action allows caching dependencies and build outputs to improve workflow execution time.
@@ -196,6 +218,10 @@ build:
 
 _Pipeline config for building_
 
+<h2 id="experiences">Experiences</h2>
+
+<h2 id="further-works">Further Works</h2>
+
 <!-- Complete Pipeline Configuartion -->
 <!-- TODO: Update this section with finished pipeline -->
 <h2 id="pipeline-config">Complete Pipeline Configuration</h2>
@@ -219,9 +245,9 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
-          java-version: '17'
-          cache: 'maven'
+          distribution: "temurin"
+          java-version: "17"
+          cache: "maven"
       # Run tests
       - name: Run Tests
         run: mvn -B test
@@ -243,9 +269,9 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
-          java-version: '17'
-          cache: 'maven'
+          distribution: "temurin"
+          java-version: "17"
+          cache: "maven"
       # Sets up SonarCloud cache
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
@@ -274,9 +300,9 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
-          java-version: '17'
-          cache: 'maven'
+          distribution: "temurin"
+          java-version: "17"
+          cache: "maven"
       #Build the application using Maven
       - name: Build with Maven
         run: mvn -B package -DskipTests --file pom.xml
