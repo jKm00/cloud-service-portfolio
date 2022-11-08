@@ -30,12 +30,14 @@
 
 <!-- TODO: describe the tools used / why -->
 
-- Spring boot: Web applicaiton
-- Sonar Cloud: Analyze the project for security, code smells, test coverage etc...
-- Docker: Containerize the application, both the spring boot web app but also the postgreSQL database the spring boot app should be connected to
-- Azuer: Production environment to host the application
+- Spring boot: To create a basic web application that can be deployed and tested.
+- Sonar Cloud: Analyze the project for security, code smells, test coverage etc... Gives good feedback on the code with a clear dashboard.
+- Docker: Containerize the application, both the spring boot web app but also the postgreSQL database the spring boot app should be connected to.
+- Azuer: Production environment to host the application. Tested multiple cloud service providers earlier in the semester and ended up liking azure the most. Has a clean dashboard, ease to understand walk-throughs when setting up resources and a lot of documentation for when you are stuck.
 
 <h2 id="architecture">Architecture</h2>
+
+<!-- TODO: describe the architecture of the deployment environment -->
 
 <!-- Location -->
 <h2 id="location">Pipeline Location</h2>
@@ -218,7 +220,70 @@ build:
 
 _Pipeline config for building_
 
-<h2 id="experiences">Experiences</h2>
+<h3 id="deploying">Deploying</h3>
+
+The job responsible for deploying the spring boot application from the repository to the azure web app. Uses the artifact generated from the previous job (build) and uploads it to the azure web app before it's ran.
+
+For github to get access to the azuer web application another secret has to be stored in the repository:
+
+| ![Azure secret](../screenshots/version-0.4-azure-secret.png) |
+| :----------------------------------------------------------: |
+|              Azure secret stored in repository               |
+
+| ![Pipeline with Azure Deployment](../screenshots/version-0.4-azure-workflow-overview.png) |
+| :---------------------------------------------------------------------------------------: |
+|                         Succesfull Pipeline with Azure Deployment                         |
+
+| ![Azure Web App Overview](../screenshots/version-0.4-azure-web-app-overview.png) |
+| :------------------------------------------------------------------------------: |
+|                              Azure Wen App Overview                              |
+
+| ![Azure Web App Endpoint](../screenshots/version-0.4-azure-web-app-endpoint.png) |
+| :------------------------------------------------------------------------------: |
+|                    Accessing api endpoint from azure web app                     |
+
+```yml
+deploy:
+  needs: build
+  name: Deploy
+  runs-on: ubuntu-latest
+  environment:
+    name: "Production"
+    url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+  steps:
+    - name: Download artifact from build job
+      uses: actions/download-artifact@v2
+      with:
+        name: portfolio-api
+
+    - name: Deploy to Azure Web App
+      id: deploy-to-webapp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: "jkm-spring-app"
+        slot-name: "Production"
+        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F582479125054960BA7F5A09E0E7EA15 }}
+        package: "*.jar"
+```
+
+_Pipeline config for deployment_
+
+<h2 id="iterations">Iterations / Experiences</h2>
+
+1. First I created the basic spring boot applicaiton with some endpoints. I wanted to connect the application to a database to challenge myself to have more than one service. In the beginning I created the app with an in memory database with the tought of moving this to a postgreSQL later in production. I would anyways need the in memory database configuration for testing to make sure I would have consistant test results.
+
+2. Next I started creating the pipeline. The first thing I wanted to complete was automated testing. For this I also needed to implement some unit test that would be run in the pipeline. The pipeline configuration was pretty straight forward. Just needed to setup a VM where I could execute all the tests.
+
+3. After doing some research, I found an iteresting tool, Sonar Cloud, that we were introduced to in the first year, but a tool that I had forgot about. After rediscovering this I wanted to implement it in the pipeline to get automated analyzing of the applicaiton. There were some challenges with this step like getting a token and storing it as a secret as well as actually using that token in the pipeline itself.
+
+4. The next and final step I wanted to complete was deploying the application, however I needed to build the application first. So this became a naturall step by itself. The main challenge with this step were to figure out how to store the built applicaiton so I could use it later to deploy.
+
+5. Now I could takle the finally step, deploying. I had tested some cloud providers earlier in the semester and found that I liked azure the most. That's why I ended up with using azure for this portfolio as well. Before I could configure the pipeline to automatically deploy, I had to configure a web application in azure that I could deploy my app to. This was done using azures portal interface. When this was created, azure automatically genereted a workflow file that I could just merge into my own.
+
+One extremly good reasen to use azure is their documentation. I had some challeneges along the way, but looking it up always yeilded a result where my pipeline ended up with a green checkmark.
+
+_Everything was done with version controll, meaning you can go to the [github repository](https://github.com/jKm00/cloud-service-portfolio) and view all the commits along the way as well as a history of all the executed workflows under the actions tab._
 
 <h2 id="further-works">Further Works</h2>
 
