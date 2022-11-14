@@ -14,6 +14,6 @@ class AppControllerTests {
   void testVersionEndpoint() {
     AppController appController = new AppController();
 
-    assertEquals("version 1.0", appController.version());
+    assertEquals("version 2.0", appController.version());
   }
 }
