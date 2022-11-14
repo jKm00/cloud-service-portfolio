@@ -2,8 +2,6 @@ Joakim Edvardsen
 
 # CI/CD Pipeline
 
-**The CI/CD Pipeline defines a set of instruction to test, build and deploy the spring boot application. These instructions are executed on every push to the main branch.**
-
 <!-- TABLE OF CONTENTS -->
 <h2>Table of Contents</h2>
 
@@ -24,8 +22,15 @@ Joakim Edvardsen
 
 <!-- Motivation -->
 <h2 id="motivation">Motivation</h2>
+Today, when working with a software product, you often want a fully functional and automated pipeline that works from code commit to production/test environment. But what are the motivations behind this?
 
-<!-- TODO: Motivation of why I chose the apps/tools. Something like I've created multiple spinrg boot apps but never actaully deployed any. Used a little docker before, but not to this extend... -->
+- By having a working pipeline you can be more confident that every feature of your software product that is pushed to production is tested and working correctly.
+
+- A pipeline makes it much easier to work with continuous integration and continuous delivery (CI/CD) by having everything automated. Everything a developer has to do when he is finished implementing a new feature, is to press a single button that will trigger the pipeline. When the pipeline is complete, the developer and every one else on the team will either get confirmation that everything is still working or that something broke an has to be fixed.
+
+- And one of the main reasons we want to have CI/CD is to rappidly deliver new features and refactor our code to make it better and more efficient. This will also yield in more rappidly feedback from the end user.
+
+_**Side note:** When to push new features to production should often be a business decision. That's why for most pipelines you dont want to automatically deploy it to production. Rather to a test environment where it can be tested to confirm everything is working and have a working product with all the new features on stand-by ready to be deploy to production when the decision is made._
 
 <!-- Tools -->
 <h2 id="tools">Tools - Which tools and why</h2>
@@ -35,9 +40,10 @@ Joakim Edvardsen
 - Spring boot: To create a basic web application that can be deployed and tested.
 - Sonar Cloud: Analyze the project for security, code smells, test coverage etc... Gives good feedback on the code with a clear dashboard.
 - Docker: Containerize the application, both the spring boot web app but also the postgreSQL database the spring boot app should be connected to.
+- GitHub Actions: I'm a big fan of GitHub an use it for every project I make. Wanted to explore more of what it has to offer.
 - Azuer: Production environment to host the application. Tested multiple cloud service providers earlier in the semester and ended up liking azure the most. Has a clean dashboard, ease to understand walk-throughs when setting up resources and a lot of documentation for when you are stuck.
 
-<h2 id="architecture">Architecture</h2>
+<!-- <h2 id="architecture">Architecture</h2> -->
 
 <!-- TODO: describe the architecture of the deployment environment -->
 
@@ -49,7 +55,9 @@ The pipeline file are store under `.github/workflows/build.yml`
 <!-- Triggers -->
 <h2 id="triggers">Pipeline Triggers</h2>
 
-The pipeline is triggered whenever a change is pushed to the main branch.
+The pipeline is triggered whenever a change is pushed to the main branch. You can also configure it to be triggered whenever a merge request to the main branch is opened. This is ususally how teams work, by creating a new branch where a single developer can work on a singel new feature. When it's implemented, the developer opens up a merge requrest to the main branch, which triggers the pipeline as well as other developers can review the new changes.
+
+Since I've worked on this projec alone, I didn't find any reasons to work like this. Instead I just pushed every change direclty to the main branch.
 
 ```yml
 on:
@@ -83,6 +91,16 @@ The unit test job makes sure all the unit test specified in the test folder of t
 | :--------------------------------------------------------------: |
 |               **Test results fron unit test job**                |
 
+If one or more tests fails, the pipeline is cancelled and the test result is logged in the `test` step of the pipeline. You can navigate your way to it and have a look at what went wrong to make it easier to pin-point what needs to be fixed.
+
+| ![Overview when tests fails](../screenshots/version-0.1-unit-test-failed-overview.PNG) |
+| :------------------------------------------------------------------------------------: |
+|                   **Pipeline canceled when on or more tests fails**                    |
+
+| ![Log output when tests fails](../screenshots/version-0.1-unit-test-failed-log.PNG) |
+| :---------------------------------------------------------------------------------: |
+|                        **Log output when some tests fails**                         |
+
 <!-- TODO: Add screenshots of failing tests -->
 
 ```yml
@@ -96,7 +114,7 @@ tests:
     - name: Set up JDK
       uses: actions/setup-java@v1
       with:
-        java-version: "17"
+        java-version: '17'
     # Set up maven
     - name: Cache Maven packages
       uses: actions/cache@v1
@@ -119,13 +137,13 @@ _**Note:** Need to specify working directory when executing the tests because th
 <!-- Jobs: Sonar Cloud analyzing -->
 <h3 id="sonar-cloud-analyzing">Sonar Cloud analyzing</h3>
 
-Runs the appliaction with Sonar Cloud to analyze the project and given feedback on bugs, security issues, test coverage, maintainability, etc... A summary of the appliaction state could be found on Sonar Cloud service.
+Runs the appliaction with Sonar Cloud to analyze the project and given feedback on bugs, security issues, test coverage, maintainability, etc... A summary of the appliaction state could be found on by logging into Sonar Cloud.
 
 | ![Sonar Cloud analyze](../screenshots/version-0.2-sonar-cloud-dashboard-test-plugin.PNG) |
 | :--------------------------------------------------------------------------------------: |
 |                                **Sonar Cloud Dashboard**                                 |
 
-For github to get access to Sonar Cloud a token is stored as a repository secret: `settings -> secrets -> actions`. This token is used directly in the pipeline job. Only admins of the repository have access to the token.
+For github to get access to Sonar Cloud a token is stored as a repository secret: `settings -> secrets -> actions`. This token is used directly in the pipeline job. Only admins of the repository have access to read, edit or delete this the token.
 
 | ![Sonar Cloud token](../screenshots/version-0.2-sonar-cloud-token.PNG) |
 | :--------------------------------------------------------------------: |
@@ -147,7 +165,7 @@ sonar:
     - name: Set up JDK
       uses: actions/setup-java@v1
       with:
-        java-version: "17"
+        java-version: '17'
     # Sets up SonarCloud cache
     - name: Cache SonarCloud packages
       uses: actions/cache@v1
@@ -195,7 +213,7 @@ build:
     - name: Set up JDK
       uses: actions/setup-java@v1
       with:
-        java-version: "17"
+        java-version: '17'
     #Set up Maven cache
     - name: Cache Maven packages
       #This action allows caching dependencies and build outputs to improve workflow execution time.
@@ -228,19 +246,19 @@ For github to get access to the azuer web application another secret has to be s
 
 | ![Azure secret](../screenshots/version-0.4-azure-secret.png) |
 | :----------------------------------------------------------: |
-|              Azure secret stored in repository               |
+|            **Azure secret stored in repository**             |
 
 | ![Pipeline with Azure Deployment](../screenshots/version-0.4-azure-workflow-overview.png) |
 | :---------------------------------------------------------------------------------------: |
-|                         Succesfull Pipeline with Azure Deployment                         |
+|                       **Succesfull Pipeline with Azure Deployment**                       |
 
 | ![Azure Web App Overview](../screenshots/version-0.4-azure-web-app-overview.png) |
 | :------------------------------------------------------------------------------: |
-|                              Azure Wen App Overview                              |
+|                            **Azure Wen App Overview**                            |
 
 | ![Azure Web App Endpoint](../screenshots/version-0.4-azure-web-app-endpoint.png) |
 | :------------------------------------------------------------------------------: |
-|                    Accessing api endpoint from azure web app                     |
+|                  **Accessing api endpoint from azure web app**                   |
 
 ```yml
 deploy:
@@ -248,7 +266,7 @@ deploy:
   name: Deploy
   runs-on: ubuntu-latest
   environment:
-    name: "Production"
+    name: 'Production'
     url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
   steps:
@@ -261,10 +279,10 @@ deploy:
       id: deploy-to-webapp
       uses: azure/webapps-deploy@v2
       with:
-        app-name: "jkm-spring-app"
-        slot-name: "Production"
+        app-name: 'jkm-spring-app'
+        slot-name: 'Production'
         publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F582479125054960BA7F5A09E0E7EA15 }}
-        package: "*.jar"
+        package: '*.jar'
 ```
 
 _Pipeline config for deployment_
@@ -285,10 +303,11 @@ One extremly good reasen to use azure is their documentation. I had some challen
 
 _Everything was done with version controll, meaning you can go to the [github repository](https://github.com/jKm00/cloud-service-portfolio) and view all the commits along the way as well as a history of all the executed workflows under the actions tab._
 
+<!-- Furter works specifications -->
 <h2 id="further-works">Further Works</h2>
+With more time working with this pipeline, I would have containerized both the spring boot application and a postgreSQL database and ran it using a `docker-compose.yml` on azure, instead of just executing the `.jar` file created from the build job of the pipeline (which runs an in memory database).
 
 <!-- Complete Pipeline Configuartion -->
-<!-- TODO: Update this section with finished pipeline -->
 <h2 id="pipeline-config">Complete Pipeline Configuration</h2>
 
 ```yml
@@ -310,9 +329,9 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          distribution: "temurin"
-          java-version: "17"
-          cache: "maven"
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
       # Run tests
       - name: Run Tests
         run: mvn -B test
@@ -334,9 +353,9 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          distribution: "temurin"
-          java-version: "17"
-          cache: "maven"
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
       # Sets up SonarCloud cache
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
@@ -365,9 +384,9 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          distribution: "temurin"
-          java-version: "17"
-          cache: "maven"
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
       #Build the application using Maven
       - name: Build with Maven
         run: mvn -B package -DskipTests --file pom.xml
@@ -380,6 +399,30 @@ jobs:
           name: portfolio-api
           #From this path
           path: portfolio-api/target/portfolio-api-1.0.jar
+
+  # Deploy application to azure
+  deploy:
+    needs: build
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v2
+        with:
+          name: portfolio-api
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'jkm-spring-app'
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F582479125054960BA7F5A09E0E7EA15 }}
+          package: '*.jar'
 ```
 
 _Config file_
