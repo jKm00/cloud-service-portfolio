@@ -32,7 +32,7 @@ public class UserController {
     if (result.isPresent()) {
       return ResponseEntity.ok().body(result.get());
     } else {
-      return ResponseEntity.badRequest().build();
+      return ResponseEntity.notFound().build();
     }
   }
 }
