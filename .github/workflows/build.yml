@@ -92,7 +92,7 @@ jobs:
         with:
           name: api
           #From this path
-          path: spring-boot/target/portfolio-api-1.0.jar
+          path: spring-boot/target/skytjenester-docker-demo-1.0.jar
 
   # Deploy application to azure
   deploy:
