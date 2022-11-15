@@ -8,7 +8,7 @@ For this task I will be using a spring boot application as an API. The idea is t
 
 At the beginning the API will use an "in memory" database. As I progress I will replace this with a postgreSQL database in "production" and only use the "in memory" database for the testing to make sure I will have consitant results.
 
-## Structure
+## Repository Structure
 
 ```
 .
@@ -16,10 +16,10 @@ At the beginning the API will use an "in memory" database. As I progress I will 
 │
 ├───documentation                     # Documentation
 │
-├───portfolio-api                     # Spring-boot application
-│   └───src/main/.../portfolioapi     # Source code
-│       │   └───resources             # Resources (e.g. application properties)
-│       └───test/.../portfolioapi     # Unit tests
+├───screenshots                       # Screenshots of the process
 │
-└───screenshots                       # Screenshots of the process
+└───spring-boot                       # Spring-boot application
+    └───src/main/.../portfolioapi     # Source code
+        │   └───resources             # Resources (e.g. application properties)
+        └───test/.../portfolioapi     # Unit tests
 ```
