@@ -22,7 +22,7 @@ jobs:
       # Run tests
       - name: Run Tests
         run: mvn -B test
-        working-directory: ./portfolio-api
+        working-directory: ./spring-boot
 
   # Sona's job
   sonar:
@@ -56,7 +56,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=jKm00_cloud-service-portfolio -Dspring.profiles.active=test
-        working-directory: ./portfolio-api
+        working-directory: ./spring-boot
 
   # Build the application for production
   build:
@@ -77,13 +77,13 @@ jobs:
       #Build the application using Maven
       - name: Build with Maven
         run: mvn -B package -DskipTests --file pom.xml
-        working-directory: ./portfolio-api
+        working-directory: ./spring-boot
       # Upload build version of application
       - name: Upload JAR
         #This uploads artifacts from your workflow allowing you to share data between jobs and store data once a workflow is complete.
         uses: actions/upload-artifact@v2
         with:
-          name: portfolio-api
+          name: api
           #From this path
           path: portfolio-api/target/portfolio-api-1.0.jar
 
@@ -100,7 +100,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
-          name: portfolio-api
+          name: api
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
