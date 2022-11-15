@@ -30,7 +30,7 @@ Today, when working with a software product, you often want a fully functional a
 
 - And one of the main reasons we want to have CI/CD is to rappidly deliver new features and refactor our code to make it better and more efficient. This will also yield in more rappidly feedback from the end user.
 
-_**Side note:** When to push new features to production should often be a business decision. That's why for most pipelines you dont want to automatically deploy it to production. Rather to a test environment where it can be tested to confirm everything is working and have a working product with all the new features on stand-by ready to be deploy to production when the decision is made._
+_**Side note:** When to push new features to production should often be a business decision. That's why for most pipelines you don't want to automatically deploy it to production. Rather to a staging environment where it can be staged to confirm everything is working and have a working product with all the new features on stand-by ready to be deploy to production when the decision is made._
 
 <!-- Tools -->
 <h2 id="tools">Tools - Which tools and why</h2>
