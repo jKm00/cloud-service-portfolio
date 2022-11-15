@@ -14,7 +14,7 @@ import no.ntnu.skytjenesterdockerdemo.models.User;
 import no.ntnu.skytjenesterdockerdemo.services.UserService;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
 
   @Autowired
