@@ -87,11 +87,11 @@ jobs:
         working-directory: ./spring-boot
       # Upload build version of application
       - name: Upload JAR
-        #This uploads artifacts from your workflow allowing you to share data between jobs and store data once a workflow is complete.
+        # This uploads artifacts from your workflow allowing you to share data between jobs and store data once a workflow is complete.
         uses: actions/upload-artifact@v2
         with:
           name: api
-          #From this path
+          # From this path
           path: spring-boot/target/skytjenester-docker-demo-1.0.jar
 
   # Deploy application to azure
