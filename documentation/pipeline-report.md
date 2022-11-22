@@ -1,59 +1,103 @@
 Joakim Edvardsen
 
-# CI/CD Pipeline
+<h1><b>CI/CD Pipeline</b></h1>
 
 <!-- TABLE OF CONTENTS -->
-<h2>Table of Contents</h2>
+
+<h2><b>Table of Contents</b></h2>
 
 - [Motivation](#motivation)
 - [Tools - Which tools and why](#tools)
+  - [Which tools and why](#tools-and-why)
+  - [Pros & Cons](#pros-and-cons)
 - [Architecture](#architecture)
-- [Pipeline Loaction - where to find the pipeline config](#location)
-- [Pipeline Triggers - how the pipeline is triggered](#triggers)
-- [Pipeline Jobs - what is done during the pipeline](#jobs)
-  - [Unit testing](#unit-test)
-  - [Sonar Cloud analyzing](#sonar-cloud-analyzing)
-  - [Building](#building)
-  - [Deploying](#deploying)
+- [Pipeline](#pipeline)
+  - [Location - where to find the pipeline config](#location)
+  - [Triggers - how the pipeline is triggered](#triggers)
+  - [Jobs - what is done during the pipelone](#jobs)
+    - [Unit testing](#unit-test)
+    - [Sonar Cloud Analyzing](#sonar-cloud-anaøyzing)
+    - [Building](#building)
+    - [Deploying](#deploying)
 - [Iterations / Experiences](#iterations-and-experiences)
 - [Further works](#further-works)
 - [Complete Pipeline Configuration](#pipeline-config)
 - [Sources & Resources](#sources)
 
 <!-- Motivation -->
-<h2 id="motivation">Motivation</h2>
+<h2 id="motivation"><b>Motivation</b></h2>
 Today, when working with a software product, you often want a fully functional and automated pipeline that works from code commit to production/test environment. But what are the motivations behind this?
 
-- By having a working pipeline you can be more confident that every feature of your software product that is pushed to production is tested and working correctly.
+By having a working pipeline you can be more confident that every feature of your software product that is pushed to production is tested and working correctly.
 
-- A pipeline makes it much easier to work with continuous integration and continuous delivery (CI/CD) by having everything automated. Everything a developer has to do when he is finished implementing a new feature, is to press a single button that will trigger the pipeline. When the pipeline is complete, the developer and every one else on the team will either get confirmation that everything is still working or that something broke an has to be fixed.
+A pipeline makes it much easier to work with continuous integration and continuous delivery (CI/CD) by having everything automated. Everything a developer has to do when he is finished implementing a new feature, is to press a single button that will trigger the pipeline. When the pipeline is complete, the developer and every one else on the team will either get confirmation that everything is still working or that something broke an has to be fixed.
 
-- And one of the main reasons we want to have CI/CD is to rappidly deliver new features and refactor our code to make it better and more efficient. This will also yield in more rappidly feedback from the end user.
+One of the main reasons we want to have CI/CD is to rappidly deliver new features and refactor our code to make it better and more efficient. This will also yield in more rappidly feedback from the end user.
 
 _**Side note:** When to push new features to production should often be a business decision. That's why for most pipelines you don't want to automatically deploy it to production. Rather to a staging environment where it can be staged to confirm everything is working and have a working product with all the new features on stand-by ready to be deploy to production when the decision is made._
 
 <!-- Tools -->
-<h2 id="tools">Tools - Which tools and why</h2>
+<h2 id="tools"><b>Tools</b></h2>
 
-<!-- TODO: describe the tools used / why -->
+<h3 id="tools-and-why"><b>Which tools and why</b></h3>
 
-- Spring boot: To create a basic web application that can be deployed and tested.
-- Sonar Cloud: Analyze the project for security, code smells, test coverage etc... Gives good feedback on the code with a clear dashboard.
-- Docker: Containerize the application, both the spring boot web app but also the postgreSQL database the spring boot app should be connected to.
-- GitHub Actions: I'm a big fan of GitHub an use it for every project I make. Wanted to explore more of what it has to offer.
-- Azuer: Production environment to host the application. Tested multiple cloud service providers earlier in the semester and ended up liking azure the most. Has a clean dashboard, ease to understand walk-throughs when setting up resources and a lot of documentation for when you are stuck.
+In my pipeline I've used five different tools, all working together to create, test, build, deploy and give feedback.
 
-<!-- <h2 id="architecture">Architecture</h2> -->
+<h4><b>Spring boot</b></h4>
+
+To create a basic web application that can be deployed and tested.
+
+<h4><b>Sonar Cloud</b></h4>
+
+Analyze the project for security, code smells, test coverage etc... Gives good feedback on the code with a clear dashboard.
+
+<h4><b>Docker</b></h4>
+
+Containerize the application, both the spring boot web app but also the postgreSQL database the spring boot app should be connected to.
+
+<h4><b>GitHub Actions</b></h4>
+
+Setting up a pipeline with triggers based on repository events directly together with the rest of my code base.
+
+<h4><b>Azure</b></h4>
+
+Production environment to host the application. Tested multiple cloud service providers earlier in the semester and ended up liking azure the most. Has a clean dashboard, ease to understand walk-throughs when setting up resources and a lot of documentation for when you are stuck.
+
+<h3 id="pros-and-cons"><b>Pros & Cons</b></h3>
+
+<h4><b>Sonar Cloud</b></h4>
+
+You might have heard of Sonar Lint for developing programs, giving you feedback in your IDE when your are writing code on code smells, bugs, security etc... Sonar Cloud does the same, only in the cloud. This is very handy and gives you a quick overview on the state of your application as well as feedback on improvments you can make to your code base.
+
+All though it's handy, it is another tool in your pipeline you have to pay for. For small hobby projects your can probably get away without paying, however for bigger projects in companies you have to pay for the service. You have to make the decision if it's worth having.
+
+<h4><b>GitHub Actions for GitOps</b></h4>
+
+One of the nice things with using GitHub Actions is that you have everything in one place. You normally store your sorce code with version controll so why not store your infrastructure and pipeline the same way? However, with this approche you might end up getting locked in to the git provider, making it more difficult to change your/the teams workflow if you want to move from the original git provider.
+
+<h4><b>Azure</b></h4>
+
+Many companies today use Azure as their cloud service providers. One of the main reasons is often that they already have other Microsoft services making Azure more simular and ease to understand. It is beneficial to have some experience with Azure, however Azure also makes itself more pleasent to work with due to its extensive documentation.
+
+For some, Azure might seem at bit expensive, but a lot of the costs goes to their Microsoft license which companies sometimes pay for anyways due to having other Microsoft services, making the cost much less expensive.
+
+With Azure you can create your own dashboard, pinning resources to it to get an overview over all the resources your currently have setup. This leads to you, the owner of these resources, beeing fully aware so you don't have resources running that you do not use.
 
 <!-- TODO: describe the architecture of the deployment environment -->
+<!-- <h2 id="architecture">Architecture</h2> -->
+
+<!-- Pipeline -->
+<h2 id="pipeline"><b>Pipeline</b></h2>
+
+The pipeline defines all the steps that should be taken whenever a change is committed to the repository. It also defines when these steps should be triggered.
 
 <!-- Location -->
-<h2 id="location">Pipeline Location</h2>
+<h3 id="location"><b>Pipeline Location</b></h3>
 
 The pipeline file are store under `.github/workflows/build.yml`
 
 <!-- Triggers -->
-<h2 id="triggers">Pipeline Triggers</h2>
+<h3 id="triggers"><b>Pipeline Triggers</b></h3>
 
 The pipeline is triggered whenever a change is pushed to the main branch. You can also configure it to be triggered whenever a merge request to the main branch is opened. This is ususally how teams work, by creating a new branch where a single developer can work on a singel new feature. When it's implemented, the developer opens up a merge requrest to the main branch, which triggers the pipeline as well as other developers can review the new changes.
 
@@ -69,9 +113,9 @@ on:
 _Pipeline trigger config_
 
 <!-- Jobs -->
-<h2 id="jobs">Pipeline Jobs</h2>
+<h3 id="jobs"><b>Pipeline Jobs</b></h3>
 
-The pipeline consits of 4 jobs:
+The pipeline consits of four jobs, each responsible for a subtask of the pipeline to be able to run, test, build and deploy the application:
 
 1.  [Unit testing](#unit-test)
 2.  [Sonar Cloud analyzing](#sonar-cloud-analyzing)
@@ -79,9 +123,9 @@ The pipeline consits of 4 jobs:
 4.  [Deploying](#deploying)
 
 <!-- Jobs: Unit testing -->
-<h3 id="unit-test">Unit test</h3>
+<h4 id="unit-test"><b>Unit test</b></h4>
 
-The unit test job makes sure all the unit test specified in the test folder of the application is executed and the job is succesfull only if all the unit test passes. If not the pipeline is canceled with logs of which test failed.
+The unit test job makes sure all the unit test specified in the test folder of the application is executed and the job is succesfull only if all the unit tests passes. If not the pipeline is canceled with logs of which test failed.
 
 | ![Successful job](../screenshots/version-0.1-unit-test-summary.PNG) |
 | :-----------------------------------------------------------------: |
@@ -100,8 +144,6 @@ If one or more tests fails, the pipeline is cancelled and the test result is log
 | ![Log output when tests fails](../screenshots/version-0.1-unit-test-failed-log.PNG) |
 | :---------------------------------------------------------------------------------: |
 |                        **Log output when some tests fails**                         |
-
-<!-- TODO: Add screenshots of failing tests -->
 
 ```yml
 tests:
@@ -135,9 +177,9 @@ For the unit test job, an ubunt VM is booted up, a JDK is downloaded and initial
 _**Note:** Need to specify working directory when executing the tests because the appliaction does not live in the root of the repository._
 
 <!-- Jobs: Sonar Cloud analyzing -->
-<h3 id="sonar-cloud-analyzing">Sonar Cloud analyzing</h3>
+<h4 id="sonar-cloud-analyzing"><b>Sonar Cloud analyzing</b></h4>
 
-Runs the appliaction with Sonar Cloud to analyze the project and given feedback on bugs, security issues, test coverage, maintainability, etc... A summary of the appliaction state could be found on by logging into Sonar Cloud.
+Runs the appliaction with Sonar Cloud to analyze the project and given feedback on bugs, security issues, test coverage, maintainability, etc... A summary of the appliaction state could be found on logging into Sonar Cloud.
 
 | ![Sonar Cloud analyze](../screenshots/version-0.2-sonar-cloud-dashboard-test-plugin.PNG) |
 | :--------------------------------------------------------------------------------------: |
@@ -192,11 +234,11 @@ sonar:
 _Pipeline config for Sonar Cloud analyze_
 
 <!-- Jobs: Building -->
-<h3 id="building">Building</h3>
+<h4 id="building"><b>Building</b></h4>
 
-Before the app can be deployed, it needs to be built. That's what this job does. After the job has build the application, the `.jar` file is uploaded as an artifact, with name `portfolio-api`, so it can be shared across the pipeline jobs.
+Before the app can be deployed, it needs to be built. That's what this job does. After the job has build the application, the `.jar` file is uploaded as an artifact, with name `api`, so it can be shared across the pipeline jobs.
 
-|        ![Artifact](../screenshots/version-0.3-build-artifact.PNG)        |
+|       ![Artifact](../screenshots/version-0.3-build-artifact-2.PNG)       |
 | :----------------------------------------------------------------------: |
 | **Uploaded artifact by pipeline job** _(can be downloaded and executed)_ |
 
@@ -208,37 +250,31 @@ build:
   runs-on: ubuntu-latest
   steps:
     #Check-out repository
-    - uses: actions/checkout@v1
-    #Set up JDK
+    - uses: actions/checkout@v2
+    # Set up JDK
     - name: Set up JDK
-      uses: actions/setup-java@v1
+      uses: actions/setup-java@v3
       with:
+        distribution: 'temurin'
         java-version: '17'
-    #Set up Maven cache
-    - name: Cache Maven packages
-      #This action allows caching dependencies and build outputs to improve workflow execution time.
-      uses: actions/cache@v1
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
+        cache: 'maven'
     #Build the application using Maven
     - name: Build with Maven
       run: mvn -B package -DskipTests --file pom.xml
-      working-directory: ./portfolio-api
+      working-directory: ./spring-boot
     # Upload build version of application
     - name: Upload JAR
-      #This uploads artifacts from your workflow allowing you to share data between jobs and store data once a workflow is complete.
+      # This uploads artifacts from your workflow allowing you to share data between jobs and store data once a workflow is complete.
       uses: actions/upload-artifact@v2
       with:
-        name: portfolio-api
-        #From this path
-        path: portfolio-api/target/portfolio-api-1.0.jar
+        name: api
+        # From this path
+        path: spring-boot/target/skytjenester-docker-demo-1.0.jar
 ```
 
 _Pipeline config for building_
 
-<h3 id="deploying">Deploying</h3>
+<h4 id="deploying"><b>Deploying</b></h4>
 
 The job responsible for deploying the spring boot application from the repository to the azure web app. Uses the artifact generated from the previous job (build) and uploads it to the azure web app before it's ran.
 
@@ -273,7 +309,7 @@ deploy:
     - name: Download artifact from build job
       uses: actions/download-artifact@v2
       with:
-        name: portfolio-api
+        name: api
 
     - name: Deploy to Azure Web App
       id: deploy-to-webapp
@@ -287,7 +323,9 @@ deploy:
 
 _Pipeline config for deployment_
 
-<h2 id="iterations-and-experiences">Iterations / Experiences</h2>
+<h2 id="iterations-and-experiences"><b>Iterations / Experiences</b></h2>
+
+<!-- TODO: Look over / rewrite this section. Maybe split into iterations and experiences seperatly -->
 
 1. First I created the basic spring boot applicaiton with some endpoints. I wanted to connect the application to a database to challenge myself to have more than one service. In the beginning I created the app with an in memory database with the tought of moving this to a postgreSQL later in production. I would anyways need the in memory database configuration for testing to make sure I would have consistant test results.
 
@@ -304,11 +342,11 @@ One extremly good reasen to use azure is their documentation. I had some challen
 _Everything was done with version controll, meaning you can go to the [github repository](https://github.com/jKm00/cloud-service-portfolio) and view all the commits along the way as well as a history of all the executed workflows under the actions tab._
 
 <!-- Furter works specifications -->
-<h2 id="further-works">Further Works</h2>
+<h2 id="further-works"><b>Further Works</b></h2>
 With more time working with this pipeline, I would have containerized both the spring boot application and a postgreSQL database and ran it using a `docker-compose.yml` on azure, instead of just executing the `.jar` file created from the build job of the pipeline (which runs an in memory database).
 
 <!-- Complete Pipeline Configuartion -->
-<h2 id="pipeline-config">Complete Pipeline Configuration</h2>
+<h2 id="pipeline-config"><b>Complete Pipeline Configuration</b></h2>
 
 ```yml
 name: CI/CD Pipeline
@@ -335,7 +373,7 @@ jobs:
       # Run tests
       - name: Run Tests
         run: mvn -B test
-        working-directory: ./portfolio-api
+        working-directory: ./spring-boot
 
   # Sona's job
   sonar:
@@ -363,13 +401,20 @@ jobs:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
+      # Set up maven
+      - name: Cache Maven packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
       # Uses SonarCloud to analyze the project
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=jKm00_cloud-service-portfolio -Dspring.profiles.active=test
-        working-directory: ./portfolio-api
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=jKm00_cloud-service-portfolio
+        working-directory: ./spring-boot
 
   # Build the application for production
   build:
@@ -390,15 +435,15 @@ jobs:
       #Build the application using Maven
       - name: Build with Maven
         run: mvn -B package -DskipTests --file pom.xml
-        working-directory: ./portfolio-api
+        working-directory: ./spring-boot
       # Upload build version of application
       - name: Upload JAR
-        #This uploads artifacts from your workflow allowing you to share data between jobs and store data once a workflow is complete.
+        # This uploads artifacts from your workflow allowing you to share data between jobs and store data once a workflow is complete.
         uses: actions/upload-artifact@v2
         with:
-          name: portfolio-api
-          #From this path
-          path: portfolio-api/target/portfolio-api-1.0.jar
+          name: api
+          # From this path
+          path: spring-boot/target/skytjenester-docker-demo-1.0.jar
 
   # Deploy application to azure
   deploy:
@@ -413,7 +458,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
-          name: portfolio-api
+          name: api
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -431,7 +476,7 @@ _Config file_
 | :----------------------------------------------------------------------------------: |
 |                            **Complete Pipeline Summary**                             |
 
-<h2 id="sources">Sources & Resources</h2>
+<h2 id="sources"><b>Sources & Resources</b></h2>
 
 - [Pipeline configuration guide](https://aws.plainenglish.io/hands-on-ci-cd-for-spring-boot-applications-using-github-actions-and-aws-1cbc1e2c9d54)
 - [GitHub Actions: Java with maven guide](https://github.com/actions/setup-java#caching-packages-dependencies)
