@@ -19,7 +19,8 @@ Joakim Edvardsen
     - [Sonar Cloud Analyzing](#sonar-cloud-anaøyzing)
     - [Building](#building)
     - [Deploying](#deploying)
-- [Iterations / Experiences](#iterations-and-experiences)
+- [Iterations](#iterations)
+- [Experiences](#experiences)
 - [Further works](#further-works)
 - [Complete Pipeline Configuration](#pipeline-config)
 - [Sources & Resources](#sources)
@@ -49,7 +50,7 @@ To create a basic web application that can be deployed and tested.
 
 <h4><b>Sonar Cloud</b></h4>
 
-Analyze the project for security, code smells, test coverage etc... Gives good feedback on the code with a clear dashboard.
+Static code analyzing tool for analyzing the project for security, code smells, test coverage etc... Gives good feedback on the code with a clear dashboard.
 
 <h4><b>Docker</b></h4>
 
@@ -69,7 +70,7 @@ Production environment to host the application. Tested multiple cloud service pr
 
 You might have heard of Sonar Lint for developing programs, giving you feedback in your IDE when your are writing code on code smells, bugs, security etc... Sonar Cloud does the same, only in the cloud. This is very handy and gives you a quick overview on the state of your application as well as feedback on improvments you can make to your code base.
 
-All though it's handy, it is another tool in your pipeline you have to pay for. For small hobby projects your can probably get away without paying, however for bigger projects in companies you have to pay for the service. You have to make the decision if it's worth having.
+All though it's handy, it is another tool in your pipeline you have to pay for. For small hobby projects you can probably get away without paying, however for bigger projects in companies you have to pay for the service. You have to make the decision if it's worth having.
 
 <h4><b>GitHub Actions for GitOps</b></h4>
 
@@ -94,14 +95,14 @@ The pipeline defines all the steps that should be taken whenever a change is com
 <!-- Location -->
 <h3 id="location"><b>Pipeline Location</b></h3>
 
-The pipeline file are store under `.github/workflows/build.yml`
+The pipeline configuration file are stored under version controll in the [GitHub repository](https://github.com/jKm00/cloud-service-portfolio) under `.github/workflows/build.yml`
 
 <!-- Triggers -->
 <h3 id="triggers"><b>Pipeline Triggers</b></h3>
 
-The pipeline is triggered whenever a change is pushed to the main branch. You can also configure it to be triggered whenever a merge request to the main branch is opened. This is ususally how teams work, by creating a new branch where a single developer can work on a singel new feature. When it's implemented, the developer opens up a merge requrest to the main branch, which triggers the pipeline as well as other developers can review the new changes.
+The pipeline is triggered whenever a change is pushed to the main branch. You can also configure it to be triggered whenever a pull request to the main branch is opened. This is ususally how teams work, by creating a new branch where a single developer can work on a singel new feature. When it's implemented, the developer opens up a pull requrest to the main branch, which triggers the pipeline as well as other developers can review the new changes.
 
-Since I've worked on this projec alone, I didn't find any reasons to work like this. Instead I just pushed every change direclty to the main branch.
+Since I've worked on this project alone, I didn't find any reasons to work like this. Instead I just pushed every change direclty to the main branch.
 
 ```yml
 on:
@@ -179,7 +180,7 @@ _**Note:** Need to specify working directory when executing the tests because th
 <!-- Jobs: Sonar Cloud analyzing -->
 <h4 id="sonar-cloud-analyzing"><b>Sonar Cloud analyzing</b></h4>
 
-Runs the appliaction with Sonar Cloud to analyze the project and given feedback on bugs, security issues, test coverage, maintainability, etc... A summary of the appliaction state could be found on logging into Sonar Cloud.
+Runs the appliaction with Sonar Cloud to analyze the project and given feedback on bugs, security issues, test coverage, maintainability, etc... A summary of the appliaction state could be found by logging into Sonar Cloud.
 
 | ![Sonar Cloud analyze](../screenshots/version-0.2-sonar-cloud-dashboard-test-plugin.PNG) |
 | :--------------------------------------------------------------------------------------: |
@@ -323,7 +324,7 @@ deploy:
 
 _Pipeline config for deployment_
 
-<h2 id="iterations-and-experiences"><b>Iterations / Experiences</b></h2>
+<h2 id="iterations"><b>Iterations</b></h2>
 
 <!-- TODO: Look over / rewrite this section. Maybe split into iterations and experiences seperatly -->
 
@@ -335,11 +336,17 @@ _Pipeline config for deployment_
 
 4. The next and final step I wanted to complete was deploying the application, however I needed to build the application first. So this became a naturall step by itself. The main challenge with this step were to figure out how to store the built applicaiton so I could use it later to deploy.
 
-5. Now I could takle the finally step, deploying. I had tested some cloud providers earlier in the semester and found that I liked azure the most. That's why I ended up with using azure for this portfolio as well. Before I could configure the pipeline to automatically deploy, I had to configure a web application in azure that I could deploy my app to. This was done using azures portal interface. When this was created, azure automatically genereted a workflow file that I could just merge into my own.
+5. Now I could takle the finally step, deploying. I had tested some cloud providers earlier in the semester and found that I liked azure the most. That's why I ended up using azure for this portfolio as well. Before I could configure the pipeline to automatically deploy, I had to configure a web application in azure that I could deploy my app to. This was done using azures portal interface. When this was created, azure automatically genereted a workflow file that I could just merge into my own.
 
-One extremly good reasen to use azure is their documentation. I had some challeneges along the way, but looking it up always yeilded a result where my pipeline ended up with a green checkmark.
+_Everything was done with version controll, meaning you can go to the [GitHub repository](https://github.com/jKm00/cloud-service-portfolio) and view all the commits along the way as well as a history of all the executed workflows under the actions tab._
 
-_Everything was done with version controll, meaning you can go to the [github repository](https://github.com/jKm00/cloud-service-portfolio) and view all the commits along the way as well as a history of all the executed workflows under the actions tab._
+<h2 id="experiences"><b>Experiences</b></h2>
+
+I found it pretty easy and intuitivt to work with GitHub actions and getting it set up with triggers so the pipeline would execute whenever a change was made to the code base. For me, it just makes sence to use the same tools for your CI/CD configuration as you use for you application and services, all though I also see that there can be some disadvantages with this approach.
+
+I had to do some troubleshooting along the way, especially when configurating pipeline jobs that had to be integrated with third parties like Sonar Cloud and Azuer, but both GitHub and Azuer has a lot of documentation that help along the way. The main difficulity was understanding have repository secrets worked and how I could use the in the pipeline.
+
+I also tried to implement some docker functionality at the end. I made the `Dockerfile` for the spring boot application and the `docker-compose` file that spins up a postgreSQL database and the spring boot. Everything works locally, but I had some trouble setting it up with Azure. This would have been something I would have had to look more into to be able to achieve.
 
 <!-- Furter works specifications -->
 <h2 id="further-works"><b>Further Works</b></h2>
