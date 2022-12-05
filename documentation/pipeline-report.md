@@ -22,7 +22,7 @@ Joakim Edvardsen
 - [Iterations](#iterations)
 - [Experiences](#experiences)
 - [Further works](#further-works)
-- [Complete Pipeline Configuration](#pipeline-config)
+- [Complete CI/CD Pipeline Configuration File](#pipeline-config)
 - [Sources & Resources](#sources)
 
 <!-- Motivation -->
@@ -348,12 +348,69 @@ I had to do some troubleshooting along the way, especially when configurating pi
 
 I also tried to implement some docker functionality at the end. I made the `Dockerfile` for the spring boot application and the `docker-compose` file that spins up a postgreSQL database and the spring boot. Everything works locally, but I had some trouble setting it up with Azure. This would have been something I would have had to look more into to be able to achieve.
 
+| ![Docker compose running locally](../screenshots/docker-locally-overview.PNG) |
+| :---------------------------------------------------------------------------: |
+|                      **Docker compose running locally**                       |
+
+```Dockerfile
+# Dockerfile for the backend in the production environment
+FROM amazoncorretto:19.0.1-alpine
+
+WORKDIR /app
+
+# Copy the jar file to the container
+COPY target/*.jar app.jar
+
+# Run the jar with the production application properties
+ENTRYPOINT ["java","-Dspring.profiles.active=${SPRING_PROFILE_ACTIVE}","-jar","app.jar"]
+```
+
+_Dockerfile configuration_
+
+```yml
+version: '3.5'
+services:
+  api:
+    container_name: api
+    image: jkm00/spring-boot
+    ports:
+      - 80:8080
+    environment:
+      - 'SPRING_PROFILE_ACTIVE=prod'
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    # Make sure database is up and running before starting the api
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    container_name: database
+    image: postgres:12.2
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - ${POSTGRES_PORT}:5432
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+```
+
+_Docker compose config file_
+
 <!-- Furter works specifications -->
 <h2 id="further-works"><b>Further Works</b></h2>
-With more time working with this pipeline, I would have containerized both the spring boot application and a postgreSQL database and ran it using a `docker-compose.yml` on azure, instead of just executing the `.jar` file created from the build job of the pipeline (which runs an in memory database).
+With more time working with this pipeline, I would have used the containerized versions of both the spring boot application and a postgreSQL database and ran it using the `docker-compose.yml` on azure, instead of just executing the `.jar` file created from the build job of the pipeline (which runs an in memory database).
 
 <!-- Complete Pipeline Configuartion -->
-<h2 id="pipeline-config"><b>Complete Pipeline Configuration</b></h2>
+<h2 id="pipeline-config"><b>Complete CI/DI Pipeline Configuration File</b></h2>
 
 ```yml
 name: CI/CD Pipeline
