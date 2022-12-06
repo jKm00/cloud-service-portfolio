@@ -1,4 +1,4 @@
-Joakim Edvardsen
+Candidate number: 10026
 
 <h1><b>CI/CD Pipeline Portfolio</b></h1>
 
@@ -346,7 +346,7 @@ I also tried to implement some docker functionality at the end. I made the `Dock
 <h2 id="further-works"><b>6. Further Works</b></h2>
 As mentioned I started containerizing the application and got everything running locally. With more time working with this pipeline, I would have used the containerized versions of both the spring boot application and a postgreSQL database and ran it using the `docker-compose.yml` on azure, instead of just executing the `.jar` file created from the build job of the pipeline (which runs an in memory database).
 
-Here are the configuration files for the cotainerization:
+Here are the configuration files for the containerization:
 
 | ![Docker compose running locally](../screenshots/docker-locally-overview.PNG) |
 | :---------------------------------------------------------------------------: |
@@ -542,4 +542,4 @@ _Config file_
 - [GitHub Actions: Java with maven guide](https://github.com/actions/setup-java#caching-packages-dependencies)
 - [Sonar Cloud Github Actions](https://github.com/SonarSource/sonarcloud-github-action)
 - [Azure / GitHub Pipeline](https://www.youtube.com/watch?v=CPsI1KnVSOM&t=1135s&ab_channel=JasonFreeberg)
-- [GitHub Repository](https://github.com/jKm00/cloud-service-portfolio)
+- [My GitHub Repository](https://github.com/jKm00/cloud-service-portfolio)
